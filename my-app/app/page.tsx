@@ -12,6 +12,19 @@ const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
   const [events, setEvents] = useState<PickCalendarEvent[]>([]);
+  useEffect(() => {
+    fetch("/api/event")
+      .then((res) => res.json())
+      .then((result: EventT[]) => {
+        const bigCalendarEvent = result.map((event) => ({
+          id: event._id,
+          title: event.description,
+          start: new Date(event.date),
+          end: new Date(event.endDate),
+        }));
+        setEvents(bigCalendarEvent);
+      });
+  }, []);
 
   const [showEventForm, setShowEventForm] = useState(false);
   const [datePayload, setDatePayload] = useState<SelectDateEvent | null>(null);

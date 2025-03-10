@@ -29,3 +29,11 @@ export type SelectDateEvent = {
   start: Date;
   end: Date;
 };
+
+export type PickCalendarEvent = {
+  id?: string;
+  title: string;
+  start: Date;
+  end: Date;
+  allDay?: boolean;
+};

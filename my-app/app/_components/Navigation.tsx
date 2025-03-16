@@ -20,7 +20,13 @@ export default function Navigation() {
       >
         Show
       </button>
-      {showEventForm && <CreateEvent />}
+      {showEventForm && (
+        <CreateEvent
+          onClose={() => {
+            setShowEventForm(false);
+          }}
+        />
+      )}
     </nav>
   );
 }

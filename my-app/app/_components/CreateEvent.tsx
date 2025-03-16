@@ -8,7 +8,15 @@ import { EventT } from "../type";
 import "bootstrap/dist/css/bootstrap.min.css";
 import dateFormator from "../lib/dateFormator";
 
-function CreateEvent({ date, endDate }: { date?: Date; endDate?: Date }) {
+function CreateEvent({
+  date,
+  endDate,
+  onClose,
+}: {
+  date?: Date;
+  endDate?: Date;
+  onClose: () => void;
+}) {
   const router = useRouter();
 
   const [event, setEvent] = useState<Partial<EventT>>({
@@ -50,10 +58,10 @@ function CreateEvent({ date, endDate }: { date?: Date; endDate?: Date }) {
   };
 
   return (
-    <Modal>
+    <Modal onClose={onClose}>
       <form
         onSubmit={handleSubmit}
-        className="position-absolute top-50 start-50 translate-middle p-4 border rounded shadow-lg bg-white"
+        className=" p-4 border rounded shadow-lg bg-white"
       >
         <div className="mb-3">
           <label htmlFor="date" className="form-label">

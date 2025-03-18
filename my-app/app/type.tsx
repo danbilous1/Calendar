@@ -14,6 +14,7 @@ export type EventT = {
   description: string;
   schedule?: object;
   capacity: number;
+  appointments?: Appointment[];
 };
 
 export type Appointment = {

@@ -2,28 +2,45 @@
 import { useEffect, useState } from "react";
 import AppointmentCart from "./_components/AppointmentCart";
 import Image from "next/image";
-import { Calendar, momentLocalizer, SlotInfo } from "react-big-calendar";
+import { Calendar, momentLocalizer, SlotInfo, Event } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CreateEvent from "./_components/CreateEvent";
 import { EventT, PickCalendarEvent, SelectDateEvent } from "./type";
 import { useRouter } from "next/navigation";
+import appointment from "./models/appointment";
 
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
-  const [events, setEvents] = useState<PickCalendarEvent[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [appointments, setAppointments] = useState<Event[]>([]);
   const router = useRouter();
   useEffect(() => {
     fetch("/api/event")
       .then((res) => res.json())
       .then((result: EventT[]) => {
-        const bigCalendarEvent = result.map((event) => ({
-          id: event._id,
-          title: event.description,
-          start: new Date(event.date),
-          end: new Date(event.endDate),
-        }));
+        const bigCalendarEvent = result.map((event) => {
+          if (event?.appointments?.length) {
+            setAppointments((prev) =>
+              prev.concat(
+                event?.appointments?.map((appointment) => ({
+                  id: appointment._id,
+                  title: event.description + appointment.status,
+                  start: new Date(appointment.date || event.date),
+                  end: new Date(appointment.endDate || event.endDate),
+                })) || []
+              )
+            );
+          }
+          return {
+            id: event._id,
+            title: event.description,
+            start: new Date(event.date),
+            end: new Date(event.endDate),
+          };
+        });
+
         setEvents(bigCalendarEvent);
       });
   }, []);
@@ -35,30 +52,53 @@ const MyCalendar = () => {
     console.log(1, payload);
     setDatePayload(payload);
   }
-  function handleSelectEvent(payload: SlotInfo) {
+  function handleSelectEvent(payload: unknown) {
     console.log(2, payload);
     setShowEventForm(false);
-    router.push(`/appointment?eventId=${payload.id}`);
+    if (
+      typeof payload == "object" &&
+      payload !== null &&
+      "id" in payload &&
+      "start" in payload &&
+      "end" in payload &&
+      payload.start instanceof Date &&
+      payload.end instanceof Date
+    ) {
+      router.push(
+        `/appointment?eventId=${
+          payload.id
+        }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
+      );
+    }
   }
+  console.log(events, appointments);
 
   return (
     <div>
       <Calendar
+        dayLayoutAlgorithm={"no-overlap"}
         onSelectSlot={handleSelectTime}
         onSelectEvent={handleSelectEvent}
         localizer={localizer}
-        backgroundEvents={events}
+        backgroundEvents={events as unknown as Event[]}
+        events={appointments}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
         selectable
       />
       {showEventForm && datePayload && (
-        <CreateEvent date={datePayload.start} endDate={datePayload.end} />
+        <CreateEvent
+          date={datePayload.start}
+          endDate={datePayload.end}
+          onClose={() => {
+            setShowEventForm(false);
+          }}
+        />
       )}
     </div>
   );
 };
 export default MyCalendar;
 
-
+// ADD DATE INPUT IN APPOINTMENT CHILDREN(CUSTOMER SELECTED IT)

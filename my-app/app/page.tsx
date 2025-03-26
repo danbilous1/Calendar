@@ -44,17 +44,8 @@ const MyCalendar = () => {
         setEvents(bigCalendarEvent);
       });
   }, []);
-
-  const [showEventForm, setShowEventForm] = useState(false);
-  const [datePayload, setDatePayload] = useState<SelectDateEvent | null>(null);
-  function handleSelectTime(payload: SelectDateEvent) {
-    setShowEventForm(true);
-    console.log(1, payload);
-    setDatePayload(payload);
-  }
   function handleSelectEvent(payload: unknown) {
     console.log(2, payload);
-    setShowEventForm(false);
     if (
       typeof payload == "object" &&
       payload !== null &&
@@ -77,7 +68,6 @@ const MyCalendar = () => {
     <div>
       <Calendar
         dayLayoutAlgorithm={"no-overlap"}
-        onSelectSlot={handleSelectTime}
         onSelectEvent={handleSelectEvent}
         localizer={localizer}
         backgroundEvents={events as unknown as Event[]}
@@ -87,18 +77,7 @@ const MyCalendar = () => {
         style={{ height: 500 }}
         selectable
       />
-      {showEventForm && datePayload && (
-        <CreateEvent
-          date={datePayload.start}
-          endDate={datePayload.end}
-          onClose={() => {
-            setShowEventForm(false);
-          }}
-        />
-      )}
     </div>
   );
 };
 export default MyCalendar;
-
-// ADD DATE INPUT IN APPOINTMENT CHILDREN(CUSTOMER SELECTED IT)

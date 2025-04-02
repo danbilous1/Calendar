@@ -2,7 +2,7 @@ import dbConnect from "@/app/lib/dbConnect";
 import userModel from "@/app/models/user";
 import { Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 import { cookies } from "next/headers";
 
 // create get endpoint to see appointment
@@ -32,11 +32,13 @@ export async function POST(request: Request) {
       email,
       password: passCrypt,
     });
-    const token = jwt.sign(
-      { id: newUser._id, email: newUser.email },
-      process.env.JWT_SECRET!,
-      { expiresIn: "20m" }
-    );
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const token = await new SignJWT({
+      id: newUser._id.toString(),
+      email: newUser.email,
+    })
+      .setExpirationTime("20m")
+      .sign(secret);
     (await cookies()).set({
       name: "token",
       value: token,

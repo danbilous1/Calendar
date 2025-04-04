@@ -29,11 +29,3 @@ const AppointmentSchema = new mongoose.Schema({
 
 export default mongoose.models.Appointment ||
   mongoose.model<Appointment>("Appointment", AppointmentSchema);
-
-// // type Appointment = {
-//   id: string;
-//   eventId: EventT["id"];
-//   userId: User["id"];
-//   date?: string;
-//   status: "scheduled" | "confirmed" | "paid" | "canceled" | "commited";
-// };

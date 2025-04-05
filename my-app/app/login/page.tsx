@@ -1,13 +1,43 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState<string>("");
+  const router = useRouter();
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // post endpoint
+    fetch("api/user/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((res) => {
+        if (res.status === 201) {
+          return res.json();
+        } else {
+          setError(true);
+          return res.json();
+        }
+      })
+      .then((result) => {
+        if (result.message) {
+          setErrorMsg(result.message);
+        } else {
+          console.log(result);
+          router.push("/");
+        }
+      });
   };
 
   return (
@@ -15,13 +45,13 @@ export default function LoginPage() {
       <h1>Login Page</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="email">Email:</label>
           <input
             type="text"
-            id="username"
-            value={username}
+            id="email"
+            value={email}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUsername(e.target.value)
+              setEmail(e.target.value)
             }
           />
         </div>

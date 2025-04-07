@@ -43,7 +43,7 @@ EventSchema.set("toObject", {
   virtuals: true,
 });
 
-export default mongoose.models.Event ||
+export default mongoose?.models?.Event ||
   mongoose.model<EventT>("Event", EventSchema);
 
 // type EventT = {

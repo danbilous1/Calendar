@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import "@/app/models/user";
+import userModel from "@/app/models/user";
+import dbConnect from "@/app/lib/dbConnect";
 
 export async function middleware(request: NextRequest) {
   if (
@@ -27,15 +30,22 @@ export async function middleware(request: NextRequest) {
       // scenario, when token is expired or invalid
       throw new Error("No token");
     }
-    // if (request.nextUrl.pathname == "/admin/dashboard") {
-    //   console.log(request.nextUrl.searchParams, "middleware");
-    //   return NextResponse.redirect(new URL("/login", request.url));
-    // }
+    const userId = payload.payload.id as string;
+    console.log(request.nextUrl.pathname);
+    if (request.nextUrl.pathname == "/admin/dashboard") {
+      await dbConnect();
+      const existingUser = await userModel.findById(userId);
+      console.log({ existingUser });
+      if (!existingUser.isAdmin) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+    }
 
     const response = NextResponse.next();
-    response.headers.set("userId", payload.payload.id);
+    response.headers.set("userId", userId);
     return response;
   } catch (error) {
+    console.log(error);
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }

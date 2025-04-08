@@ -9,18 +9,22 @@ import CreateEvent from "./_components/CreateEvent";
 import { EventT, PickCalendarEvent, SelectDateEvent } from "./type";
 import { useRouter } from "next/navigation";
 import appointment from "./models/appointment";
+import { Result } from "postcss";
 
 const localizer = momentLocalizer(moment);
+type ResultT = { events: EventT[]; isAdmin: boolean };
 
 const MyCalendar = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [appointments, setAppointments] = useState<Event[]>([]);
   const router = useRouter();
   useEffect(() => {
     fetch("/api/event")
       .then((res) => res.json())
-      .then((result: EventT[]) => {
-        const bigCalendarEvent = result.map((event) => {
+      .then((result: ResultT) => {
+        setIsAdmin(result.isAdmin);
+        const bigCalendarEvent = result.events.map((event) => {
           if (event?.appointments?.length) {
             setAppointments((prev) =>
               prev.concat(
@@ -81,5 +85,3 @@ const MyCalendar = () => {
   );
 };
 export default MyCalendar;
-
-// ADD DATE INPUT IN APPOINTMENT CHILDREN(CUSTOMER SELECTED IT)

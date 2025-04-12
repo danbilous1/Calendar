@@ -25,6 +25,7 @@ export type Appointment = {
   date?: string;
   endDate?: string;
   status: "scheduled" | "confirmed" | "paid" | "canceled" | "commited";
+  notes?: string;
 };
 
 export type SelectDateEvent = {

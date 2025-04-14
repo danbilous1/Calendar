@@ -51,6 +51,9 @@ const MyCalendar = () => {
   }, []);
 
   console.log(events, appointments);
+  if (isAdmin === null) {
+    return <div>Loading..</div>;
+  }
 
   return (
     <div>

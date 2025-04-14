@@ -22,7 +22,8 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log(body);
+    const userId = request.headers.get("userId");
+    body.userId = userId;
     const newAppointment = await appointmentModel.create(body);
 
     return Response.json(newAppointment);

@@ -10,20 +10,20 @@ import { EventT, PickCalendarEvent, SelectDateEvent } from "./type";
 import { useRouter } from "next/navigation";
 import appointment from "./models/appointment";
 import { Result } from "postcss";
+import AdminCalendar from "./_components/AdminCalendar";
+import UserCalendar from "./_components/UserCalendar";
 
-const localizer = momentLocalizer(moment);
 type ResultT = { events: EventT[]; isAdmin: boolean };
 
 const MyCalendar = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [appointments, setAppointments] = useState<Event[]>([]);
-  const router = useRouter();
+
   useEffect(() => {
     fetch("/api/event")
       .then((res) => res.json())
       .then((result: ResultT) => {
-        setIsAdmin(result.isAdmin);
         const bigCalendarEvent = result.events.map((event) => {
           if (event?.appointments?.length) {
             setAppointments((prev) =>
@@ -46,41 +46,19 @@ const MyCalendar = () => {
         });
 
         setEvents(bigCalendarEvent);
+        setIsAdmin(result.isAdmin);
       });
   }, []);
-  function handleSelectEvent(payload: unknown) {
-    console.log(2, payload);
-    if (
-      typeof payload == "object" &&
-      payload !== null &&
-      "id" in payload &&
-      "start" in payload &&
-      "end" in payload &&
-      payload.start instanceof Date &&
-      payload.end instanceof Date
-    ) {
-      router.push(
-        `/appointment?eventId=${
-          payload.id
-        }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
-      );
-    }
-  }
+
   console.log(events, appointments);
 
   return (
     <div>
-      <Calendar
-        dayLayoutAlgorithm={"no-overlap"}
-        onSelectEvent={handleSelectEvent}
-        localizer={localizer}
-        backgroundEvents={events as unknown as Event[]}
-        events={appointments}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
-        selectable
-      />
+      {isAdmin ? (
+        <AdminCalendar events={events} appointments={appointments} />
+      ) : (
+        <UserCalendar events={events} appointments={appointments} />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AppointmentCart from "./_components/AppointmentCart";
 import Image from "next/image";
 import { Calendar, momentLocalizer, SlotInfo, Event } from "react-big-calendar";
@@ -17,13 +17,14 @@ type ResultT = { events: EventT[]; isAdmin: boolean };
 
 const MyCalendar = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [appointments, setAppointments] = useState<Event[]>([]);
 
   useEffect(() => {
     fetch("/api/event")
       .then((res) => res.json())
       .then((result: ResultT) => {
+        setIsAdmin(result.isAdmin);
         const bigCalendarEvent = result.events.map((event) => {
           if (event?.appointments?.length) {
             setAppointments((prev) =>
@@ -46,22 +47,26 @@ const MyCalendar = () => {
         });
 
         setEvents(bigCalendarEvent);
-        setIsAdmin(result.isAdmin);
       });
   }, []);
 
   console.log(events, appointments);
-  if (isAdmin === null) {
-    return <div>Loading..</div>;
-  }
-
+  // if (isAdmin === null) {
+  //   return <div>Loading..</div>;
+  // }
   return (
     <div>
-      {isAdmin ? (
-        <AdminCalendar events={events} appointments={appointments} />
-      ) : (
-        <UserCalendar events={events} appointments={appointments} />
-      )}
+      {/* {isAdmin === null ? (
+        <div>Loading..</div>
+      ) : isAdmin ? ( */}
+      <AdminCalendar
+        events={events}
+        appointments={appointments}
+        isAdmin={isAdmin}
+      />
+      {/* ) : ( */}
+      {/* <UserCalendar events={events} appointments={appointments} /> */}
+      {/* )} */}
     </div>
   );
 };

@@ -11,10 +11,12 @@ import { EventT, PickCalendarEvent, SelectDateEvent } from "@/app/type";
 import { useRouter } from "next/navigation";
 const localizer = momentLocalizer(moment);
 
-const AdminCalendar: FC<{ events: Event[]; appointments: Event[] }> = ({
-  events,
-  appointments,
-}) => {
+const AdminCalendar: FC<{
+  events: Event[];
+  appointments: Event[];
+  isAdmin: boolean;
+}> = ({ events, appointments, isAdmin }) => {
+  console.log("admin calendar rendered");
   const router = useRouter();
 
   const [showEventForm, setShowEventForm] = useState(false);
@@ -46,10 +48,10 @@ const AdminCalendar: FC<{ events: Event[]; appointments: Event[] }> = ({
 
   return (
     <div>
-      <h1>Admin View</h1>
+      <h1>{isAdmin ? "Admin View" : "User View"}</h1>
       <Calendar
         dayLayoutAlgorithm={"no-overlap"}
-        onSelectSlot={handleSelectTime}
+        onSelectSlot={isAdmin ? handleSelectTime : () => {}}
         onSelectEvent={handleSelectEvent}
         localizer={localizer}
         backgroundEvents={events as unknown as Event[]}
@@ -59,7 +61,7 @@ const AdminCalendar: FC<{ events: Event[]; appointments: Event[] }> = ({
         style={{ height: 500 }}
         selectable
       />
-      {showEventForm && datePayload && (
+      {showEventForm && datePayload && isAdmin && (
         <CreateEvent
           date={datePayload.start}
           endDate={datePayload.end}

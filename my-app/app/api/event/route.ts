@@ -43,12 +43,17 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: Request) {
   await dbConnect();
+  const userId = request.headers.get("userId");
+  const existingUser = await userModel.findById(userId);
   try {
     const body = await request.json();
     console.log(body);
-    const newUser = await eventModel.create(body);
+    if (existingUser.isAdmin) {
+      const newEvent = await eventModel.create(body);
+      return Response.json(newEvent);
+    }
 
-    return Response.json(newUser);
+    return Response.json({ message: "You are not allowed." }, { status: 403 });
   } catch (error) {
     return Response.json(error);
   }

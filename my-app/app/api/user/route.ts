@@ -5,16 +5,11 @@ import bcrypt from "bcrypt";
 import { SignJWT } from "jose";
 import { cookies } from "next/headers";
 
-// create get endpoint to see appointment
 export async function GET() {
   await dbConnect();
   const users = await userModel.find();
   return Response.json(users);
 }
-
-// create post endpoint to create appointment
-
-// create post endpoint to create user
 
 export async function POST(request: Request) {
   await dbConnect();

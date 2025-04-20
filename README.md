@@ -12,4 +12,4 @@ A modern calendar application with event management capabilities, built with Rea
 - **Admin and User account**  
   Admin has an ability to create events, while user can only create appointments.
 - **Simple backend and security**  
-  Tokens, sign up / login and etc.
+  Token authorization, sign up / login and etc.

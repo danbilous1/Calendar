@@ -9,7 +9,7 @@ A modern calendar application with event management capabilities, built with Rea
   Create events(editing and deleting events coming..)
 - **Agenda Button**  
   By clicking, shows you list of events this month, week and day(depends which view).
-- **Admin and User account**
+- **Admin and User account**  
   Admin has an ability to create events, while user can only create appointments.
-- **Simple backend and security**
+- **Simple backend and security**  
   Tokens, sign up / login and etc.

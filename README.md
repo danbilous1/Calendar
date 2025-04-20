@@ -2,7 +2,7 @@
 
 A modern calendar application with event management capabilities, built with React.
 
-## Features ✨
+## Features 
 - **Monthly, Weekly, Daily Calendar View**  
   Navigate between months, weeks, days with "Next" and "Back" buttons.
 - **Event Management**  

@@ -36,7 +36,9 @@ const AdminCalendar: FC<{
       "start" in payload &&
       "end" in payload &&
       payload.start instanceof Date &&
-      payload.end instanceof Date
+      payload.end instanceof Date &&
+      "isBackgroundEvent" in payload &&
+      payload.isBackgroundEvent
     ) {
       router.push(
         `/appointment?eventId=${
@@ -44,6 +46,9 @@ const AdminCalendar: FC<{
         }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
       );
     }
+  }
+  function handleEdit(payload) {
+    console.log(3, payload);
   }
 
   return (
@@ -53,6 +58,7 @@ const AdminCalendar: FC<{
         dayLayoutAlgorithm={"no-overlap"}
         onSelectSlot={isAdmin ? handleSelectTime : () => {}}
         onSelectEvent={handleSelectEvent}
+        onDoubleClickEvent={handleEdit}
         localizer={localizer}
         backgroundEvents={events as unknown as Event[]}
         events={appointments}

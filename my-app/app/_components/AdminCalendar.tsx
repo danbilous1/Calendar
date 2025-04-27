@@ -21,6 +21,7 @@ const AdminCalendar: FC<{
 
   const [showEventForm, setShowEventForm] = useState(false);
   const [datePayload, setDatePayload] = useState<SelectDateEvent | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
   function handleSelectTime(payload: SelectDateEvent) {
     setShowEventForm(true);
     console.log(1, payload);
@@ -49,6 +50,7 @@ const AdminCalendar: FC<{
   }
   function handleEdit(payload) {
     console.log(3, payload);
+
   }
 
   return (

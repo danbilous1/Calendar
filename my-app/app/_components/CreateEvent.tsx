@@ -19,9 +19,7 @@ function CreateEvent({
 }) {
   const router = useRouter();
 
-  const [event, setEvent] = useState<Partial<EventT>>({
-    creatorId: "67bded36fbc30f27b01f075e",
-  });
+  const [event, setEvent] = useState<Partial<EventT>>({});
 
   useEffect(() => {
     if (date && endDate) {
@@ -38,7 +36,11 @@ function CreateEvent({
     setEvent((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleEdit = (e: React.FormEvent) => {
+
+  // };
+
+  const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     fetch("/api/event", {
       method: "POST",
@@ -60,7 +62,7 @@ function CreateEvent({
   return (
     <Modal onClose={onClose}>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleCreate}
         className=" p-4 border rounded shadow-lg bg-white"
       >
         <div className="mb-3">

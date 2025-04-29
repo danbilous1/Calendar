@@ -9,6 +9,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import CreateEvent from "@/app/_components/CreateEvent";
 import { EventT, PickCalendarEvent, SelectDateEvent } from "@/app/type";
 import { useRouter } from "next/navigation";
+import Menu from "./Menu";
 const localizer = momentLocalizer(moment);
 
 const AdminCalendar: FC<{
@@ -21,15 +22,39 @@ const AdminCalendar: FC<{
 
   const [showEventForm, setShowEventForm] = useState(false);
   const [datePayload, setDatePayload] = useState<SelectDateEvent | null>(null);
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState<{
+    create_event: (() => void) | false;
+    edit_event: boolean;
+    create_appointment: (() => void) | false;
+    edit_appointment: boolean;
+  }>({
+    create_event: false,
+    edit_event: false,
+    create_appointment: false,
+    edit_appointment: false,
+  });
   function handleSelectTime(payload: SelectDateEvent) {
-    setShowEventForm(true);
+    // setShowEventForm(true);
+    setShowMenu(() => ({
+      edit_event: false,
+      create_appointment: false,
+      edit_appointment: false,
+      create_event: () => {
+        setShowEventForm(true);
+        setShowMenu({
+          create_event: false,
+          edit_event: false,
+          create_appointment: false,
+          edit_appointment: false,
+        });
+      },
+    }));
     console.log(1, payload);
     setDatePayload(payload);
   }
   function handleSelectEvent(payload: unknown) {
     console.log(2, payload);
-    setShowEventForm(false);
+    // setShowEventForm(false);
     if (
       typeof payload == "object" &&
       payload !== null &&
@@ -41,16 +66,49 @@ const AdminCalendar: FC<{
       "isBackgroundEvent" in payload &&
       payload.isBackgroundEvent
     ) {
-      router.push(
-        `/appointment?eventId=${
-          payload.id
-        }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
-      );
+      //   router.push(
+      //     `/appointment?eventId=${
+      //       payload.id
+      //     }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
+      //   );
+      setShowMenu((prev) => ({
+        ...prev,
+        edit_event: true,
+        create_appointment: () => {
+          setShowMenu({
+            create_event: false,
+            edit_event: false,
+            create_appointment: false,
+            edit_appointment: false,
+          });
+          router.push(
+            `/appointment?eventId=${
+              payload.id
+            }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
+          );
+        },
+        edit_appointment: false,
+      }));
+    } else {
+      setShowMenu((prev) => ({
+        ...prev,
+        edit_event: true,
+        create_appointment: () => {
+          setShowMenu({
+            create_event: false,
+            edit_event: false,
+            create_appointment: false,
+            edit_appointment: false,
+          });
+          router.push(
+            `/appointment?eventId=${
+              payload.event_id
+            }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
+          );
+        },
+        edit_appointment: true,
+      }));
     }
-  }
-  function handleEdit(payload) {
-    console.log(3, payload);
-
   }
 
   return (
@@ -60,7 +118,6 @@ const AdminCalendar: FC<{
         dayLayoutAlgorithm={"no-overlap"}
         onSelectSlot={isAdmin ? handleSelectTime : () => {}}
         onSelectEvent={handleSelectEvent}
-        onDoubleClickEvent={handleEdit}
         localizer={localizer}
         backgroundEvents={events as unknown as Event[]}
         events={appointments}
@@ -78,6 +135,7 @@ const AdminCalendar: FC<{
           }}
         />
       )}
+      <Menu showMenu={showMenu} />
     </div>
   );
 };

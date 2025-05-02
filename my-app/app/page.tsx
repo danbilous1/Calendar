@@ -31,18 +31,22 @@ const MyCalendar = () => {
               prev.concat(
                 event?.appointments?.map((appointment) => ({
                   id: appointment._id,
-                  title: event.description + appointment.status,
+                  event_id: event._id,
+                  title:
+                    "appointment " + event.description + appointment.status,
                   start: new Date(appointment.date || event.date),
                   end: new Date(appointment.endDate || event.endDate),
+                  type: "appointment",
                 })) || []
               )
             );
           }
           return {
             id: event._id,
-            title: event.description,
+            title: "event " + event.description,
             start: new Date(event.date),
             end: new Date(event.endDate),
+            type: "event",
           };
         });
 
@@ -51,23 +55,17 @@ const MyCalendar = () => {
   }, []);
 
   console.log(events, appointments);
-  // if (isAdmin === null) {
-  //   return <div>Loading..</div>;
-  // }
+
   return (
     <div>
-      {/* {isAdmin === null ? (
-        <div>Loading..</div>
-      ) : isAdmin ? ( */}
       <AdminCalendar
         events={events}
         appointments={appointments}
         isAdmin={isAdmin}
       />
-      {/* ) : ( */}
-      {/* <UserCalendar events={events} appointments={appointments} /> */}
-      {/* )} */}
     </div>
   );
 };
 export default MyCalendar;
+
+// MAKE LIST OF FEATURES, THAT WE DIDNT ADD YET

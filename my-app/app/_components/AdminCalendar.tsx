@@ -22,9 +22,10 @@ const AdminCalendar: FC<{
 
   const [showEventForm, setShowEventForm] = useState(false);
   const [datePayload, setDatePayload] = useState<SelectDateEvent | null>(null);
+  const [selectEvent, setSelectEvent] = useState<Event | null>(null);
   const [showMenu, setShowMenu] = useState<{
     create_event: (() => void) | false;
-    edit_event: boolean;
+    edit_event: (() => void) | false;
     create_appointment: (() => void) | false;
     edit_appointment: boolean;
   }>({
@@ -73,7 +74,16 @@ const AdminCalendar: FC<{
       //   );
       setShowMenu((prev) => ({
         ...prev,
-        edit_event: true,
+        edit_event: () => {
+          setSelectEvent(payload);
+          setShowEventForm(true);
+          setShowMenu({
+            create_event: false,
+            edit_event: false,
+            create_appointment: false,
+            edit_appointment: false,
+          });
+        },
         create_appointment: () => {
           setShowMenu({
             create_event: false,
@@ -92,7 +102,22 @@ const AdminCalendar: FC<{
     } else {
       setShowMenu((prev) => ({
         ...prev,
-        edit_event: true,
+        edit_event: () => {
+          const eventId = payload.event_id;
+          const correctEvent = events.find((event) => {
+            event.id == eventId;
+          });
+          if (correctEvent) {
+            setSelectEvent(correctEvent);
+          }
+          setShowEventForm(true);
+          setShowMenu({
+            create_event: false,
+            edit_event: false,
+            create_appointment: false,
+            edit_appointment: false,
+          });
+        },
         create_appointment: () => {
           setShowMenu({
             create_event: false,
@@ -133,6 +158,7 @@ const AdminCalendar: FC<{
           onClose={() => {
             setShowEventForm(false);
           }}
+          selectEvent={selectEvent}
         />
       )}
       <Menu showMenu={showMenu} />

@@ -7,38 +7,48 @@ import Modal from "@/app/_components/Modal";
 import { EventT } from "../type";
 import "bootstrap/dist/css/bootstrap.min.css";
 import dateFormator from "../lib/dateFormator";
+import { Event } from "react-big-calendar";
 
 function CreateEvent({
   date,
   endDate,
   onClose,
+  selectEvent,
 }: {
   date?: Date;
   endDate?: Date;
   onClose: () => void;
+  selectEvent?: Event;
 }) {
   const router = useRouter();
 
   const [event, setEvent] = useState<Partial<EventT>>({});
 
   useEffect(() => {
-    if (date && endDate) {
+    if (selectEvent) {
+      setEvent((prevevent) => ({
+        ...prevevent,
+        description: selectEvent.title as string,
+        date: dateFormator(selectEvent.start!),
+        endDate: dateFormator(selectEvent.end!),
+      }));
+    } else if (date && endDate) {
       setEvent({
         ...event,
         date: dateFormator(date),
         endDate: dateFormator(endDate),
       });
     }
-  }, [date, endDate]);
+  }, [date, endDate, selectEvent]);
+
+  useEffect(() => {}, [selectEvent]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEvent((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleEdit = (e: React.FormEvent) => {
-
-  // };
+  const handleEdit = (e: React.FormEvent) => {};
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +72,7 @@ function CreateEvent({
   return (
     <Modal onClose={onClose}>
       <form
-        onSubmit={handleCreate}
+        onSubmit={selectEvent ? handleEdit : handleCreate}
         className=" p-4 border rounded shadow-lg bg-white"
       >
         <div className="mb-3">
@@ -134,7 +144,7 @@ function CreateEvent({
         </div>
 
         <button type="submit" className="btn btn-primary w-100">
-          Create Event
+          {selectEvent ? "Update Event" : "Create Event"}
         </button>
       </form>
     </Modal>

@@ -30,7 +30,7 @@ function CreateAppointment() {
         endDate: dateFormator(new Date(+endDate)),
       }));
     }
-  }, [eventId, date, endDate]);
+  }, [eventId, date, endDate]); // create new useeffect what will listen to appointment id search param and fetch current appointment data from mongo and will populate form
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -10,7 +10,7 @@ function Menu({
 }: {
   showMenu: {
     create_event: (() => void) | false;
-    edit_event: boolean;
+    edit_event: (() => void) | false;
     create_appointment: (() => void) | false;
     edit_appointment: boolean;
   };
@@ -38,8 +38,13 @@ function Menu({
                   Create Event
                 </button>
               )}
-              {showMenu.edit_event && (
-                <button className="btn btn-light w-100 mb-2">Edit Event</button>
+              {!!showMenu.edit_event && (
+                <button
+                  className="btn btn-light w-100 mb-2"
+                  onClick={showMenu.edit_event}
+                >
+                  Edit Event
+                </button>
               )}
               {!!showMenu.create_appointment && (
                 <button

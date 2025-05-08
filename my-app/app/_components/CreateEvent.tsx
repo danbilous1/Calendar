@@ -28,6 +28,7 @@ function CreateEvent({
     if (selectEvent) {
       setEvent((prevevent) => ({
         ...prevevent,
+        _id: selectEvent.id,
         description: selectEvent.title as string,
         date: dateFormator(selectEvent.start!),
         endDate: dateFormator(selectEvent.end!),
@@ -48,7 +49,24 @@ function CreateEvent({
     setEvent((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEdit = (e: React.FormEvent) => {};
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetch(`/api/event`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(event),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.error) {
+          console.log(result.error);
+          return;
+        }
+        router.push("/");
+      });
+  };
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();

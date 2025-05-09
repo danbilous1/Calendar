@@ -27,7 +27,7 @@ const AdminCalendar: FC<{
     create_event: (() => void) | false;
     edit_event: (() => void) | false;
     create_appointment: (() => void) | false;
-    edit_appointment: boolean;
+    edit_appointment: (() => void) | false;
   }>({
     create_event: false,
     edit_event: false,
@@ -131,7 +131,15 @@ const AdminCalendar: FC<{
             }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
           );
         },
-        edit_appointment: true,
+        edit_appointment: () => {
+          setShowMenu({
+            create_event: false,
+            edit_event: false,
+            create_appointment: false,
+            edit_appointment: false,
+          });
+          router.push(`/appointment?appointmentId=${payload.id}`);
+        },
       }));
     }
   }

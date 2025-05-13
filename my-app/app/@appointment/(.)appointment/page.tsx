@@ -14,6 +14,7 @@ function CreateAppointment() {
   const eventId = searchParams.get("eventId");
   const date = searchParams.get("date");
   const endDate = searchParams.get("endDate");
+  const appointmentId = searchParams.get("appointmentId");
 
   const [appointment, setAppointment] = useState<Partial<Appointment>>({
     status: "scheduled",
@@ -29,8 +30,12 @@ function CreateAppointment() {
         date: dateFormator(new Date(+date)),
         endDate: dateFormator(new Date(+endDate)),
       }));
+    } else if (appointmentId) {
+      fetch(`/api/appointment?appointmentId=${appointmentId}`)
+        .then((res) => res.json())
+        .then((result) => setAppointment(result.appointment));
     }
-  }, [eventId, date, endDate]); // create new useeffect what will listen to appointment id search param and fetch current appointment data from mongo and will populate form
+  }, [eventId, date, endDate, appointmentId]); // create new useeffect what will listen to appointment id search param and fetch current appointment data from mongo and will populate form
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -56,6 +61,25 @@ function CreateAppointment() {
       });
   };
 
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetch("/api/appointment", {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(appointment),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.error) {
+          console.log(result.error);
+          return;
+        }
+        router.back();
+      });
+  };
+
   return (
     <Modal
       onClose={() => {
@@ -63,7 +87,7 @@ function CreateAppointment() {
       }}
     >
       <form
-        onSubmit={handleSubmit}
+        onSubmit={appointmentId ? handleEdit : handleSubmit}
         className=" p-4 border rounded shadow-lg bg-white"
       >
         <div className="mb-3">
@@ -108,7 +132,7 @@ function CreateAppointment() {
           />
         </div>
         <button type="submit" className="btn btn-primary w-100">
-          Create Appointment
+          {appointmentId ? "Edit Appointment" : "Create Appointment"}
         </button>
       </form>
     </Modal>

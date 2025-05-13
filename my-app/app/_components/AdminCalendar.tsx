@@ -132,6 +132,7 @@ const AdminCalendar: FC<{
           );
         },
         edit_appointment: () => {
+          console.log(payload);
           setShowMenu({
             create_event: false,
             edit_event: false,

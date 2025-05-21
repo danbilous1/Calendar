@@ -29,14 +29,6 @@ export async function middleware(request: NextRequest) {
     }
     const userId = payload.payload.id as string;
     console.log(request.nextUrl.pathname);
-    // if (request.nextUrl.pathname == "/admin/dashboard") {
-    //   await dbConnect();
-    //   const existingUser = await userModel.findById(userId);
-    //   console.log({ existingUser });
-    //   if (!existingUser.isAdmin) {
-    //     return NextResponse.redirect(new URL("/login", request.url));
-    //   }
-    // }
 
     const response = NextResponse.next();
     response.headers.set("userId", userId);

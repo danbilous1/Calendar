@@ -11,6 +11,7 @@ export async function GET() {
   return Response.json(users);
 }
 
+
 export async function POST(request: Request) {
   await dbConnect();
   const { name, email, password } = await request.json();
@@ -47,4 +48,3 @@ export async function POST(request: Request) {
   }
 }
 
-// create get entpoint to read user's data

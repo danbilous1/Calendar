@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// create post endpoint to create appointment
 
 export async function PUT(request: Request) {
   await dbConnect();
@@ -46,6 +47,7 @@ export async function PUT(request: Request) {
     const findAppointment = await appointmentModel.findById(body._id);
     console.log(body);
     if (existingUser.isAdmin || findAppointment.userId == userId) {
+      // findEvent - cursor
       if (findAppointment) {
         findAppointment.notes = body?.notes ?? findAppointment.notes;
         findAppointment.date = body?.date ?? findAppointment.date;

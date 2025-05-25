@@ -12,7 +12,7 @@ function Menu({
     create_event: (() => void) | false;
     edit_event: (() => void) | false;
     create_appointment: (() => void) | false;
-    edit_appointment: boolean;
+    edit_appointment: (() => void) | false;
   };
 }) {
   const [open, setOpen] = useState(false);
@@ -54,8 +54,11 @@ function Menu({
                   Create Appointment
                 </button>
               )}
-              {showMenu.edit_appointment && (
-                <button className="btn btn-light w-100 mb-2">
+              {!!showMenu.edit_appointment && (
+                <button
+                  className="btn btn-light w-100 mb-2"
+                  onClick={showMenu.edit_appointment}
+                >
                   Edit Appointment
                 </button>
               )}

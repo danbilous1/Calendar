@@ -1,4 +1,4 @@
-// A business side admin dashboard for businesses to manage available appointment times and future appointments.
+// A business and user side
 "use client";
 import { FC, useEffect, useState } from "react";
 import AppointmentCart from "@/app/_components/AppointmentCart";
@@ -67,11 +67,6 @@ const AdminCalendar: FC<{
       "isBackgroundEvent" in payload &&
       payload.isBackgroundEvent
     ) {
-      //   router.push(
-      //     `/appointment?eventId=${
-      //       payload.id
-      //     }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
-      //   );
       setShowMenu((prev) => ({
         ...prev,
         edit_event: () => {

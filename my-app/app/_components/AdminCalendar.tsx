@@ -1,4 +1,4 @@
-// A business and user side
+// A business side admin dashboard for businesses to manage available appointment times and future appointments.
 "use client";
 import { FC, useEffect, useState } from "react";
 import AppointmentCart from "@/app/_components/AppointmentCart";
@@ -7,14 +7,20 @@ import { Calendar, momentLocalizer, SlotInfo, Event } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import CreateEvent from "@/app/_components/CreateEvent";
-import { EventT, PickCalendarEvent, SelectDateEvent } from "@/app/type";
+import {
+  Appointment,
+  EventT,
+  OwnEvent,
+  PickCalendarEvent,
+  SelectDateEvent,
+} from "@/app/type";
 import { useRouter } from "next/navigation";
 import Menu from "./Menu";
 const localizer = momentLocalizer(moment);
 
 const AdminCalendar: FC<{
-  events: Event[];
-  appointments: Event[];
+  events: OwnEvent[];
+  appointments: OwnEvent[];
   isAdmin: boolean;
 }> = ({ events, appointments, isAdmin }) => {
   console.log("admin calendar rendered");
@@ -22,7 +28,7 @@ const AdminCalendar: FC<{
 
   const [showEventForm, setShowEventForm] = useState(false);
   const [datePayload, setDatePayload] = useState<SelectDateEvent | null>(null);
-  const [selectEvent, setSelectEvent] = useState<Event | null>(null);
+  const [selectEvent, setSelectEvent] = useState<OwnEvent | null>(null);
   const [showMenu, setShowMenu] = useState<{
     create_event: (() => void) | false;
     edit_event: (() => void) | false;
@@ -67,10 +73,15 @@ const AdminCalendar: FC<{
       "isBackgroundEvent" in payload &&
       payload.isBackgroundEvent
     ) {
+      //   router.push(
+      //     `/appointment?eventId=${
+      //       payload.id
+      //     }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
+      //   );
       setShowMenu((prev) => ({
         ...prev,
         edit_event: () => {
-          setSelectEvent(payload);
+          setSelectEvent(payload as OwnEvent);
           setShowEventForm(true);
           setShowMenu({
             create_event: false,
@@ -87,9 +98,9 @@ const AdminCalendar: FC<{
             edit_appointment: false,
           });
           router.push(
-            `/appointment?eventId=${
-              payload.id
-            }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
+            `/appointment?eventId=${payload.id}&date=${(
+              payload as Event
+            )?.start?.getTime()}&endDate=${(payload as Event)?.end?.getTime()}`
           );
         },
         edit_appointment: false,
@@ -98,7 +109,7 @@ const AdminCalendar: FC<{
       setShowMenu((prev) => ({
         ...prev,
         edit_event: () => {
-          const eventId = payload.event_id;
+          const eventId = (payload as Event & { event_id: string }).event_id;
           const correctEvent = events.find((event) => {
             event.id == eventId;
           });
@@ -121,9 +132,11 @@ const AdminCalendar: FC<{
             edit_appointment: false,
           });
           router.push(
-            `/appointment?eventId=${
-              payload.event_id
-            }&date=${payload.start.getTime()}&endDate=${payload.end.getTime()}`
+            `/appointment?eventId=${(payload as OwnEvent).event_id}&date=${(
+              payload as OwnEvent
+            )?.start?.getTime()}&endDate=${(
+              payload as OwnEvent
+            )?.end?.getTime()}`
           );
         },
         edit_appointment: () => {
@@ -134,7 +147,7 @@ const AdminCalendar: FC<{
             create_appointment: false,
             edit_appointment: false,
           });
-          router.push(`/appointment?appointmentId=${payload.id}`);
+          router.push(`/appointment?appointmentId=${(payload as OwnEvent).id}`);
         },
       }));
     }

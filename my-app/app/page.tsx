@@ -1,6 +1,6 @@
 "use server";
 import { Event } from "react-big-calendar";
-import { Appointment, EventT } from "./type";
+import { Appointment, EventT, OwnEvent } from "./type";
 import AdminCalendar from "./_components/AdminCalendar";
 import { getevents } from "@/app/actions/getevents";
 import { headers } from "next/headers";
@@ -10,12 +10,12 @@ const MyCalendar = async () => {
   const userId = headersObject.get("userId");
   const { events, isAdmin, appointments } = await getevents(userId).then(
     ([eventsList, isAdmin]) => {
-      let appointments: Event[] = [];
+      const appointments: OwnEvent[] = [];
       const events = eventsList.map((event) => {
         if (event?.appointments?.length) {
           appointments.push(
             ...(event?.appointments?.map((appointment) => ({
-              id: appointment._id,
+              id: appointment._id as string,
               event_id: event._id,
               title: "appointment " + event.description + appointment.status,
               start: new Date(appointment.date || event.date),
@@ -25,7 +25,7 @@ const MyCalendar = async () => {
           );
         }
         return {
-          id: event._id,
+          id: event._id as string,
           title: "event " + event.description,
           start: new Date(event.date),
           end: new Date(event.endDate),

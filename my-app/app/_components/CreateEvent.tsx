@@ -4,10 +4,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Modal from "@/app/_components/Modal";
-import { EventT } from "../type";
+import { EventT, OwnEvent } from "../type";
 import "bootstrap/dist/css/bootstrap.min.css";
 import dateFormator from "../lib/dateFormator";
-import { Event } from "react-big-calendar";
 
 function CreateEvent({
   date,
@@ -18,7 +17,7 @@ function CreateEvent({
   date?: Date;
   endDate?: Date;
   onClose: () => void;
-  selectEvent?: Event;
+  selectEvent: OwnEvent | null;
 }) {
   const router = useRouter();
 

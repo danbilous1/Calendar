@@ -1,4 +1,3 @@
-// A business side admin dashboard for businesses to manage available appointment times and future appointments.
 "use client";
 import { FC, useEffect, useState } from "react";
 import AppointmentCart from "@/app/_components/AppointmentCart";

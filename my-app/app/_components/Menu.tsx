@@ -25,6 +25,7 @@ function Menu({
       className="modal show d-block"
       tabIndex={-1}
       style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+      onClick={() => setOpen(false)}
     >
       <div className="modal-dialog">
         <div className="modal-content">
@@ -33,7 +34,10 @@ function Menu({
               {!!showMenu.create_event && (
                 <button
                   className="btn btn-light w-100 mb-2"
-                  onClick={showMenu.create_event}
+                  onClick={() => {
+                    showMenu.create_event && showMenu.create_event();
+                    setOpen(false);
+                  }}
                 >
                   Create Event
                 </button>
